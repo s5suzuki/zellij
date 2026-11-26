@@ -594,6 +594,12 @@ impl CharacterStyles {
         if self.italic != new_styles.italic {
             diff.italic = new_styles.italic;
         }
+        if diff.bold == Some(AnsiCode::Reset) && new_styles.dim == Some(AnsiCode::On) {
+            diff.dim = Some(AnsiCode::On);
+        }
+        if diff.dim == Some(AnsiCode::Reset) && new_styles.bold == Some(AnsiCode::On) {
+            diff.bold = Some(AnsiCode::On);
+        }
         if self.link_anchor != new_styles.link_anchor {
             diff.link_anchor = new_styles.link_anchor;
         }

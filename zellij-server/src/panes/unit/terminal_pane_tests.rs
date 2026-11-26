@@ -1468,3 +1468,21 @@ fn output_split_at_any_byte_renders_the_same_as_output_in_one_piece() {
         );
     }
 }
+
+#[test]
+fn ending_bold_keeps_dim_and_ending_dim_keeps_bold() {
+    use crate::panes::terminal_character::{AnsiCode, RESET_STYLES};
+    let bold_dim = RESET_STYLES
+        .bold(Some(AnsiCode::On))
+        .dim(Some(AnsiCode::On));
+    let mut current = bold_dim;
+    let diff = current
+        .update_and_return_diff(&RESET_STYLES.dim(Some(AnsiCode::On)), None)
+        .unwrap();
+    assert_eq!(diff.to_string(), "\u{1b}[22m\u{1b}[2m");
+    let mut current = bold_dim;
+    let diff = current
+        .update_and_return_diff(&RESET_STYLES.bold(Some(AnsiCode::On)), None)
+        .unwrap();
+    assert_eq!(diff.to_string(), "\u{1b}[1m\u{1b}[22m\u{1b}[1m");
+}
