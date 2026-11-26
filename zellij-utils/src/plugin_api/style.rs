@@ -36,6 +36,7 @@ impl TryFrom<ProtobufStyle> for Style {
                 .unwrap_or_else(|| {
                     BorderStyle::with_rounded_corners(protobuf_style.rounded_corners)
                 }),
+            dim_inactive_panes: false,
         })
     }
 }
@@ -506,6 +507,7 @@ mod tests {
             hide_session_name: false,
             border_style: sample_border_style(),
             floating_border_style: BorderStyle::with_rounded_corners(false),
+            dim_inactive_panes: false,
         };
         let protobuf: ProtobufStyle = style.try_into().expect("encode");
         let decoded: Style = protobuf.try_into().expect("decode");
@@ -524,6 +526,7 @@ mod tests {
             hide_session_name: false,
             border_style: sample_border_style(),
             floating_border_style: sample_border_style(),
+            dim_inactive_panes: false,
         };
         let mut protobuf: ProtobufStyle = style.try_into().expect("encode");
         protobuf.border_style = None;

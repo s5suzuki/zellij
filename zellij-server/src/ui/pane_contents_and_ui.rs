@@ -161,6 +161,9 @@ impl<'a> PaneContentsAndUi<'a> {
     fn frame_is_dimmed_for_client(&self, client_id: ClientId) -> bool {
         self.dimmed_for_clients.contains(&client_id) && !self.focused_clients.contains(&client_id)
     }
+    fn contents_are_dimmed_for_client(&self, client_id: ClientId) -> bool {
+        self.style.dim_inactive_panes && !self.focused_clients.contains(&client_id)
+    }
     pub fn set_frame_geom_override(&mut self, frame_geom_override: Option<PaneGeom>) {
         self.frame_geom_override = frame_geom_override;
     }
@@ -189,17 +192,41 @@ impl<'a> PaneContentsAndUi<'a> {
         // and we can clear them from the UI below
         drop(self.pane.drain_fake_cursors());
 
-        if let Some((character_chunks, raw_vte_output, sixel_image_chunks, kitty_image_chunks)) =
-            self.pane.render(None).context(err_context)?
+        if let Some((
+            mut character_chunks,
+            raw_vte_output,
+            sixel_image_chunks,
+            kitty_image_chunks,
+        )) = self.pane.render(None).context(err_context)?
         {
             let clients: Vec<ClientId> = clients.collect();
-            self.output
-                .add_character_chunks_to_multiple_clients(
-                    character_chunks,
-                    clients.iter().copied(),
-                    self.z_index,
-                )
-                .context(err_context)?;
+            let (dimmed_clients, plain_clients): (Vec<ClientId>, Vec<ClientId>) = clients
+                .iter()
+                .partition(|client_id| self.contents_are_dimmed_for_client(**client_id));
+            if !dimmed_clients.is_empty() {
+                let mut dimmed_chunks = if plain_clients.is_empty() {
+                    std::mem::take(&mut character_chunks)
+                } else {
+                    character_chunks.clone()
+                };
+                dim_character_chunks(&mut dimmed_chunks);
+                self.output
+                    .add_character_chunks_to_multiple_clients(
+                        dimmed_chunks,
+                        dimmed_clients.into_iter(),
+                        self.z_index,
+                    )
+                    .context(err_context)?;
+            }
+            if !plain_clients.is_empty() {
+                self.output
+                    .add_character_chunks_to_multiple_clients(
+                        character_chunks,
+                        plain_clients.into_iter(),
+                        self.z_index,
+                    )
+                    .context(err_context)?;
+            }
             self.output.add_sixel_image_chunks_to_multiple_clients(
                 sixel_image_chunks,
                 clients.iter().copied(),
@@ -235,9 +262,16 @@ impl<'a> PaneContentsAndUi<'a> {
             .render(Some(client_id))
             .with_context(err_context)?;
         let plugin_redrew = rendered.is_some();
-        if let Some((character_chunks, raw_vte_output, sixel_image_chunks, kitty_image_chunks)) =
-            rendered
+        if let Some((
+            mut character_chunks,
+            raw_vte_output,
+            sixel_image_chunks,
+            kitty_image_chunks,
+        )) = rendered
         {
+            if self.contents_are_dimmed_for_client(client_id) {
+                dim_character_chunks(&mut character_chunks);
+            }
             self.output
                 .add_character_chunks_to_client(client_id, character_chunks, self.z_index)
                 .with_context(err_context)?;

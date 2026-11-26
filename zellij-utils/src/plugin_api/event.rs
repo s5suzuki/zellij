@@ -3258,6 +3258,7 @@ fn serialize_mode_update_event_with_non_default_values() {
             hide_session_name: false,
             border_style: crate::data::BorderStyle::with_rounded_corners(true),
             floating_border_style: crate::data::BorderStyle::with_rounded_corners(true),
+            dim_inactive_panes: false,
         },
         capabilities: PluginCapabilities { arrow_fonts: false },
         session_name: Some("my awesome test session".to_owned()),

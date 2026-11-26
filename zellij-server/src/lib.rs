@@ -3995,6 +3995,7 @@ pub fn start_server_impl(
                             .ui
                             .pane_frames
                             .resolved_floating_border_style(),
+                        dim_inactive_panes: config.ui.pane_frames.dim_inactive_panes,
                     },
                 };
 
@@ -4270,6 +4271,7 @@ pub fn start_server_impl(
                             .ui
                             .pane_frames
                             .resolved_floating_border_style(),
+                        dim_inactive_panes: config.ui.pane_frames.dim_inactive_panes,
                     },
                 };
 

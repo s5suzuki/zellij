@@ -473,6 +473,13 @@ fn describe_entry(key: SettingKey) -> SettingInfo {
             "false",
             OnlyYou,
         ),
+        SettingKey::FrameDimInactivePanes => info(
+            "Dim inactive panes",
+            "Draw the contents of unfocused panes faintly",
+            Toggle,
+            "true",
+            Everyone,
+        ),
         SettingKey::FrameBorderStyle => info(
             "Border style",
             "Line style for every side of tiled pane borders",
@@ -1903,9 +1910,11 @@ pub fn placement(key: SettingKey) -> (Category, &'static str) {
         NestedSessionHandling => (C::General, "Nested sessions"),
         Theme | ThemeDark | ThemeLight | ExplicitThemeHue => (C::Appearance, "Theme"),
         SimplifiedUi | VisualBell => (C::Appearance, "Interface"),
-        PaneFrames | PaneFrameStyle | FrameRoundedCorners | FrameHideSessionName => {
-            (C::Appearance, "Pane frames")
-        },
+        PaneFrames
+        | PaneFrameStyle
+        | FrameRoundedCorners
+        | FrameHideSessionName
+        | FrameDimInactivePanes => (C::Appearance, "Pane frames"),
         BarsHiddenOnStart | HiddenBarsNotification | ModeHintsWhenBarsHidden | SessionIndicator => {
             (C::Appearance, "Bars")
         },

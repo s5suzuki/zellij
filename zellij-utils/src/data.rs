@@ -2424,6 +2424,8 @@ pub struct Style {
     pub hide_session_name: bool,
     pub border_style: BorderStyle,
     pub floating_border_style: BorderStyle,
+    #[serde(default)]
+    pub dim_inactive_panes: bool,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
@@ -5613,6 +5615,7 @@ setting_keys! {
     ModeHintsWhenBarsHidden => (TopLevel, "mode_hints_when_bars_hidden", false, Flag),
     FrameRoundedCorners => (PaneFrames, "rounded_corners", false, Flag),
     FrameHideSessionName => (PaneFrames, "hide_session_name", false, Flag),
+    FrameDimInactivePanes => (PaneFrames, "dim_inactive_panes", true, Flag),
     FrameBorderStyle => (PaneFrames, "border_style", false, Text),
     FrameBorderTop => (PaneFrames, "border_top", false, Text),
     FrameBorderRight => (PaneFrames, "border_right", false, Text),

@@ -253,6 +253,7 @@ pub(crate) fn every_setting_set() -> Config {
                 hide_session_name: true,
                 border_style: every_border_override_set(LineStyle::Heavy),
                 floating_border_style: every_border_override_set(LineStyle::Double),
+                dim_inactive_panes: false,
             },
         },
         web_client: WebClientConfig {

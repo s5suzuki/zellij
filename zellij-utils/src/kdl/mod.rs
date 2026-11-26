@@ -7792,6 +7792,9 @@ impl UiConfig {
             let hide_session_name =
                 kdl_get_child_entry_bool_value!(pane_frames, "hide_session_name")
                     .unwrap_or(base_frames.hide_session_name);
+            let dim_inactive_panes =
+                kdl_get_child_entry_bool_value!(pane_frames, "dim_inactive_panes")
+                    .unwrap_or(base_frames.dim_inactive_panes);
             let border_style =
                 base_frames
                     .border_style
@@ -7811,6 +7814,7 @@ impl UiConfig {
                 hide_session_name,
                 border_style,
                 floating_border_style,
+                dim_inactive_panes,
             };
             ui_config.pane_frames = frame_config;
         }
@@ -7833,6 +7837,12 @@ impl UiConfig {
             let mut hide_session_name = KdlNode::new("hide_session_name");
             hide_session_name.push(KdlValue::Bool(true));
             frame_config_children.nodes_mut().push(hide_session_name);
+        }
+        if !self.pane_frames.dim_inactive_panes {
+            has_ui_config = true;
+            let mut dim_inactive_panes = KdlNode::new("dim_inactive_panes");
+            dim_inactive_panes.push(KdlValue::Bool(false));
+            frame_config_children.nodes_mut().push(dim_inactive_panes);
         }
         if border_style_override_to_kdl_children(
             &self.pane_frames.border_style,

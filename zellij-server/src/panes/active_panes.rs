@@ -117,6 +117,7 @@ impl ActivePanes {
         }
     }
     fn unfocus_pane(&self, pane_id: PaneId, panes: &mut BTreeMap<PaneId, Box<dyn Pane>>) {
+        repaint_pane(pane_id, panes);
         if let PaneId::Terminal(terminal_id) = pane_id {
             if let Some(focus_event) = panes.get(&pane_id).and_then(|p| p.unfocus_event()) {
                 let _ = self
@@ -126,6 +127,7 @@ impl ActivePanes {
         }
     }
     fn focus_pane(&self, pane_id: PaneId, panes: &mut BTreeMap<PaneId, Box<dyn Pane>>) {
+        repaint_pane(pane_id, panes);
         if let PaneId::Terminal(terminal_id) = pane_id {
             if let Some(focus_event) = panes.get(&pane_id).and_then(|p| p.focus_event()) {
                 let _ = self
@@ -139,5 +141,12 @@ impl ActivePanes {
             .values()
             .find(|p_id| **p_id == *pane_id)
             .is_some()
+    }
+}
+
+fn repaint_pane(pane_id: PaneId, panes: &mut BTreeMap<PaneId, Box<dyn Pane>>) {
+    if let Some(pane) = panes.get_mut(&pane_id) {
+        pane.set_should_render(true);
+        pane.render_full_viewport();
     }
 }

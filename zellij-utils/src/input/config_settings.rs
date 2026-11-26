@@ -437,6 +437,7 @@ fn ui_values(ui: &UiConfig, values: &mut BTreeMap<SettingKey, Option<String>>) {
         hide_session_name,
         border_style,
         floating_border_style,
+        dim_inactive_panes,
     } = pane_frames;
     values.insert(
         SettingKey::FrameRoundedCorners,
@@ -445,6 +446,10 @@ fn ui_values(ui: &UiConfig, values: &mut BTreeMap<SettingKey, Option<String>>) {
     values.insert(
         SettingKey::FrameHideSessionName,
         Some(hide_session_name.to_string()),
+    );
+    values.insert(
+        SettingKey::FrameDimInactivePanes,
+        Some(dim_inactive_panes.to_string()),
     );
     border_override_values(border_style, BORDER_KEYS, values);
     border_override_values(floating_border_style, FLOATING_BORDER_KEYS, values);
@@ -1043,6 +1048,9 @@ pub fn copy_setting(target: &mut Config, source: &Config, key: SettingKey) {
         SettingKey::FrameRoundedCorners => frames.rounded_corners = from_frames.rounded_corners,
         SettingKey::FrameHideSessionName => {
             frames.hide_session_name = from_frames.hide_session_name
+        },
+        SettingKey::FrameDimInactivePanes => {
+            frames.dim_inactive_panes = from_frames.dim_inactive_panes
         },
         SettingKey::FrameBorderStyle => {
             copy_border_override(&mut frames.border_style, &from_frames.border_style, 0)

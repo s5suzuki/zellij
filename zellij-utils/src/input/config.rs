@@ -1757,6 +1757,7 @@ mod config_test {
                 pane_frames {
                     rounded_corners true
                     hide_session_name true
+                    dim_inactive_panes false
                 }
             }
         "#;
@@ -1765,6 +1766,7 @@ mod config_test {
             pane_frames: FrameConfig {
                 rounded_corners: true,
                 hide_session_name: true,
+                dim_inactive_panes: false,
                 ..Default::default()
             },
         };

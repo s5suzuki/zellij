@@ -22,7 +22,7 @@ impl UiConfig {
     }
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize)]
 pub struct FrameConfig {
     pub rounded_corners: bool,
     pub hide_session_name: bool,
@@ -30,6 +30,24 @@ pub struct FrameConfig {
     pub border_style: BorderStyleOverride,
     #[serde(default)]
     pub floating_border_style: BorderStyleOverride,
+    #[serde(default = "dim_inactive_panes_default")]
+    pub dim_inactive_panes: bool,
+}
+
+fn dim_inactive_panes_default() -> bool {
+    true
+}
+
+impl Default for FrameConfig {
+    fn default() -> Self {
+        FrameConfig {
+            rounded_corners: false,
+            hide_session_name: false,
+            border_style: BorderStyleOverride::default(),
+            floating_border_style: BorderStyleOverride::default(),
+            dim_inactive_panes: dim_inactive_panes_default(),
+        }
+    }
 }
 
 impl FrameConfig {
@@ -37,6 +55,7 @@ impl FrameConfig {
         let mut merged = self.clone();
         merged.rounded_corners = other.rounded_corners;
         merged.hide_session_name = other.hide_session_name;
+        merged.dim_inactive_panes = other.dim_inactive_panes;
         merged.border_style = merged.border_style.merge(&other.border_style);
         merged.floating_border_style = merged
             .floating_border_style

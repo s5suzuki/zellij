@@ -1,5 +1,6 @@
 ---
 source: zellij-utils/src/setup.rs
+assertion_line: 1007
 expression: "format!(\"{:#?}\", config)"
 ---
 Config {
@@ -347,6 +348,7 @@ Config {
                 left: None,
                 rounded_corners: None,
             },
+            dim_inactive_panes: true,
         },
     },
     env: {},
